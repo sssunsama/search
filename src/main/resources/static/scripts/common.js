@@ -74,13 +74,3 @@ devCommon.logOut = function() {
 	};
 	devCommon.xhr(option);
 };
-devCommon.login = function() {
-	const option = {
-		method: 'POST',
-		url: '/login',
-		params: {'_csrf': document.querySelector('meta[name="_csrf"]').getAttribute("content"),
-				 'id': document.getElementById('id').value,
-		         'password': document.getElementById('password')}
-	};
-	devCommon.xhr(option);
-};

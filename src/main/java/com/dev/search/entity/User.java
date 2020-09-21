@@ -53,19 +53,16 @@ public class User implements UserDetails, Principal {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        User user = (User) o;
-
-        return id.equals(user.id);
-
+    public boolean equals(Object obj) {
+        if (obj instanceof User) {
+            return userNo.equals( ((User) obj).getUserNo() );
+        }
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return userNo != null ? userNo.hashCode() : 0;
     }
 
     @Override

@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping(value = "/templates/search")
+@RequestMapping(value = "/search")
 public class SearchController {
 
     private final SearchService searchService;
@@ -22,9 +22,7 @@ public class SearchController {
 
     @GetMapping(value = "/searchView")
     public ModelAndView searchView(HttpServletRequest request) {
-        ModelAndView modelAndView = new ModelAndView("/search/searchPage");
-        modelAndView.addObject("userName", request.getSession().getAttribute("userName"));
-        return modelAndView;
+        return new ModelAndView("/search/searchPage");
     }
 
     @GetMapping(value="/getSearchPlaceList")

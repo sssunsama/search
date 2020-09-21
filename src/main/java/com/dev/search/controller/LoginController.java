@@ -2,11 +2,11 @@ package com.dev.search.controller;
 
 import com.dev.search.entity.User;
 import com.dev.search.service.UserDetailsServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -14,9 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
+@Slf4j
 @Controller
-@RequestMapping(value = "/login")
 public class LoginController {
 
     private final UserDetailsServiceImpl userDetailsServiceImpl;
@@ -26,7 +25,7 @@ public class LoginController {
     }
 
     @GetMapping(value = "/loginSuccess")
-    public ModelAndView loginSuccess(HttpSession session, @RequestParam(value="id") String id) {
+    public ModelAndView loginSuccess(HttpSession session, @RequestParam(value="username") String id) {
         User user = userDetailsServiceImpl.loadUserByUsername(id);
         ModelAndView modelAndView = new ModelAndView("/search/searchView");
         session.setAttribute("loginUserName", user.getUsername());

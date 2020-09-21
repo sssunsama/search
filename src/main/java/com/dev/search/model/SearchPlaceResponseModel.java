@@ -1,6 +1,6 @@
 package com.dev.search.model;
 
-import com.dev.search.common.Pagination;
+import com.dev.search.common.page.Pagination;
 import lombok.Getter;
 import lombok.Setter;
 

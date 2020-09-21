@@ -1,4 +1,4 @@
-package com.dev.search.common;
+package com.dev.search.common.page;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,7 @@
 package com.dev.search.service;
 
-import com.dev.search.common.Pagination;
+import com.dev.search.common.page.Pagination;
+import com.dev.search.common.rest.RestApiClient;
 import com.dev.search.entity.SearchWord;
 import com.dev.search.model.SearchPlaceParameterModel;
 import com.dev.search.model.SearchPlaceResponseModel;
@@ -11,11 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,50 +43,23 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public SearchPlaceResponseModel searchKeyword(SearchPlaceParameterModel searchPlaceParameterModel) {
         // API 호출
-        String responseStr = this.callByAPI(searchPlaceParameterModel);
+        String endPoint = apiUrl + "keyword" + format + "?" + "page=" + searchPlaceParameterModel.getPage()
+                + "&size=" + searchPlaceParameterModel.getSize() + "&sort=" + searchPlaceParameterModel.getSort()
+                + "&query=" + searchPlaceParameterModel.getQuery();
+
+        String responseStr = RestApiClient.callByGetApi(endPoint, restApiKey);
+
         // 데이터 변환
         Gson gson = new Gson();
         SearchPlaceResponseModel searchPlaceResponseModel = gson.fromJson(responseStr, SearchPlaceResponseModel.class);
         searchPlaceResponseModel.setPagination(new Pagination(searchPlaceResponseModel.getMeta().getPageable_count(), searchPlaceParameterModel.getPage()));
+
         // 인기검색어 저장
         if (searchPlaceParameterModel.isCall_back()) {
             this.saveSearchWord(searchPlaceResponseModel.getMeta().getSame_name().getKeyword());
         }
 
         return searchPlaceResponseModel;
-    }
-
-    private String callByAPI(SearchPlaceParameterModel searchPlaceParameterModel) {
-        StringBuilder stringBuilder = new StringBuilder();
-        String endPoint;
-        try {
-            // API 검색
-            endPoint = apiUrl + "keyword" + format + "?"
-                    + "page=" + searchPlaceParameterModel.getPage() + "&size=" + searchPlaceParameterModel.getSize()
-                    + "&sort=" + searchPlaceParameterModel.getSort() + "&query=" + URLEncoder.encode(searchPlaceParameterModel.getQuery(), charset);
-
-            URL url = new URL(endPoint);
-            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-            httpURLConnection.setRequestMethod("GET");
-            httpURLConnection.setRequestProperty("Authorization", restApiKey);
-
-            int responseCode = httpURLConnection.getResponseCode();
-
-            BufferedReader br;
-            if (responseCode == 200) {
-                br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-            } else {
-                br = new BufferedReader(new InputStreamReader(httpURLConnection.getErrorStream()));
-            }
-            String line;
-            while ((line = br.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-            br.close();
-        } catch (IOException e) {
-            log.error("API error == {}", e.getMessage());
-        }
-        return stringBuilder.toString();
     }
 
     private void saveSearchWord(String keyword) {
@@ -100,8 +70,10 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<SearchPlaceTopWordModel> getSearchWordTop() {
         List<SearchWord> list = searchWordRepository.findTop10ByOrderBySearchCountDesc();
-        List<SearchPlaceTopWordModel> resultList = new ArrayList<>();
+        List<SearchPlaceTopWordModel> resultList = null;
+
         if(list != null && !list.isEmpty()) {
+            resultList = new ArrayList<>();
             for (SearchWord searchWord : list) {
                 SearchPlaceTopWordModel searchPlaceTopWordModel = new SearchPlaceTopWordModel();
                 searchPlaceTopWordModel.setSearch_word(searchWord.getSearchWord());
@@ -109,6 +81,7 @@ public class SearchServiceImpl implements SearchService {
                 resultList.add(searchPlaceTopWordModel);
             }
         }
+
         return resultList;
     }
 }
