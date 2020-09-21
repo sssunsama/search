@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="/search/layout/basic">
+	<th:block layout:fragment="title">
+		<title>장소검색</title>
+	</th:block>
+	<th:block layout:fragment="script">
+		<script type="text/javascript">
+			const search = {
+				searchList: function (page, callBack) {
+					if(document.getElementById('searchKeyword').value === null || document.getElementById('searchKeyword').value === '') {
+						alert('검색어 미입력');
+						return false;
+					}
+
+					if (page === undefined || page === null) {
+						page = 1;
+					}
+
+					const option = {
+						method: 'GET',
+						url: '/search/getSearchPlaceList?query=' + document.getElementById('searchKeyword').value
+						    + '&page=' + page + '&call_back=' + callBack,
+						callbackFunc: function(res) {
+							document.getElementById('search_list').innerHTML = res.responseText;
+							console.log("res == {}" + res);
+							if(callBack) search.searchTopWord();
+						}
+					};
+					devCommon.xhr(option);
+				},
+				searchTopWord: function() {
+					const option = {
+						method: 'GET',
+						url: '/search/getSearchTopWordList',
+						callbackFunc: function(res) {
+							document.getElementById('top_search_list').innerHTML = res.responseText;
+							document.getElementById('top_search_list').style.display = 'block';
+						}
+					};
+					devCommon.xhr(option);
+				}
+			};
+		</script>
+	</th:block>
+	<th:block layout:fragment="search">
+		<input type="text" id="searchKeyword" placeholder="Search..." class="input-search" onclick="search.searchTopWord()">
+		<button class="mdi mdi-magnify button-search" onclick="search.searchList(1, true)">
+			<i class="fa fa-search" aria-hidden="true"></i>
+		</button>
+		<div id="top_search_list"></div>
+	</th:block>
+
+	<th:block layout:fragment="content">
+		<div class="table-responsive clearfix" id="search_list"></div>
+		<input type="button" onclick="devCommon.logOut()" value="로그아웃" class="mdi mdi-magnify button-search"/>
+	</th:block>
+
+</html>

@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+    <div th:each="row : ${searchTopList}">
+        <span th:text="${row.getSearch_word()}"></span>
+        <span th:text="${row.getSearch_count() + '건'}"></span>
+    </div>
+</html>

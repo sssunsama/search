@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true"> <!-- default 1 minutes -->
+ 
+    <property name="LOGS_ROOT_PATH" value="/Users/sssunwoo/IdeaProjects/app_log" />
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+            <!--
+                %d{yyyy-MM-dd HH:mm:ss} : 년월일 시분초
+                %thread : thread name
+                %-5level : log level , -5는 출력 고정폭 값
+                %logger{length} :Logger name의 이름, {length}는 자리수
+                %msg : log message %message은 alias
+                %n : 줄바꿈
+
+                org.fusesource.jansi:jansi:1.8 가 필요함.
+                        Linux ,Mac OS X 기본적으로 지원함
+                        <withJansi>true</withJansi>설정후 사용해야함
+                %highlight : log level 별로 color가 다르게 나옴
+                -->
+                 %d{yyyy-MM-dd HH:mm:ss} [%thread] [%-5level] %logger{36} - %msg %n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS_ROOT_PATH}/${HOSTNAME}.log</file>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_ROOT_PATH}/${HOSTNAME}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>5</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Application Loggers -->
+
+    <logger name="org.springframework" level="DEBUG" additivity="false">
+        <appender-ref ref="stdout" />
+        <appender-ref ref="ROLLING" />
+    </logger>
+ 
+    <root level="DEBUG">
+        <appender-ref ref="stdout" />
+        <appender-ref ref="ROLLING" />
+    </root>
+     
+</configuration>

@@ -1,0 +1,18 @@
+spring:
+  thymeleaf:
+    prefix : classpath:/templates
+    suffix : .html
+    cache : false
+    encoding: utf-8
+    servlet:
+      content-type: text/html
+    mode: LEGACYHTML5
+    check-template-location: true
+
+kakao:
+  rest:
+    api:
+      key: KakaoAK c758ddf48549d181b1e84e35f7ffe350
+      format: .json
+      url: http://dapi.kakao.com/v2/local/search/
+      charset: UTF-8

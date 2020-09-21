@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head th:fragment="main-head">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+		<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+		<link rel="stylesheet" th:href="@{/static/css/style.css}" />
+		<link rel="stylesheet" th:href="@{/static/plugin/mCustomScrollbar/jquery.mCustomScrollbar.min.css}" />
+		<script th:src="@{/static/scripts/jquery.min.js}"></script>
+		<script th:src="@{/static/plugin/bootstrap/js/bootstrap.min.js}"></script>
+		<script th:src="@{/static/plugin/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js}"></script>
+		<script th:src="@{/static/scripts/main.js}"></script>
+		<script th:src="@{/static/scripts/common.js}"></script>
+		<th:block layout:fragment="script"></th:block>
+	</head>
+</html>
